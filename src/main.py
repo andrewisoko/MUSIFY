@@ -5,12 +5,15 @@ from oauth_spotify import OAuth_Spotify
 import os
 import urllib.parse
 from fastapi.responses import Response
+from dotenv import load_dotenv
 
 
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key= "to be added")
 oauth = OAuth_Spotify()
+oauth.spotify_urls()
+
 
 @app.get("/")
 async def frontend_msg():
@@ -19,6 +22,10 @@ async def frontend_msg():
 
 @app.get("/login")
 async def login():
+    
+    
+    load_dotenv(dotenv_path="src/.env")
+    
     scope = 'user-read-private user-read-email'
     params = {
         "client_id": os.getenv("CLIENT_ID"),
@@ -33,4 +40,4 @@ async def login():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8888, reload=True)

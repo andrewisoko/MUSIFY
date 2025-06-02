@@ -2,9 +2,10 @@ from fastapi import FastAPI,Request
 from fastapi.responses import RedirectResponse,JSONResponse
 import requests
 import os
-import urllib.parse
 from datetime import datetime
 from starlette.middleware.sessions import SessionMiddleware
+from dotenv import load_dotenv
+
 
 
 class OAuth_Spotify():
@@ -16,10 +17,10 @@ class OAuth_Spotify():
         
     def spotify_urls(self):
         
-        self.url_account_apitoken = "https://accounts.spotify.com/api/token"
-        self.redirect_uri = " http://localhost:5000/callback"
-        self.auth_url = "https://accounts.spotify.com/authorize"
-        self.baseapi_url = "https://api.spotify.com/v1/"
+        self.url_account_apitoken ="https://accounts.spotify.com/api/token"
+        self.redirect_uri = "http://127.0.0.1:8888/callback"
+        self.auth_url ="https://accounts.spotify.com/authorize"
+        self.baseapi_url ="https://api.spotify.com/v1/"
         
     
     
@@ -28,6 +29,7 @@ class OAuth_Spotify():
     async def callback(self):
         
         request = Request()
+        load_dotenv(dotenv_path="src/.env")
         
         if 'error' in request.query_params:
             return {"error":request.query_params['error']}
@@ -104,5 +106,5 @@ class OAuth_Spotify():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)     
+    uvicorn.run("main:app", host="0.0.0.0", port=8888, reload=True)     
         
