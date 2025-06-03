@@ -17,7 +17,7 @@ class OAuth_Spotify:
         self.url_account_apitoken = "https://accounts.spotify.com/api/token"
         self.redirect_uri = "http://127.0.0.1:8888/callback"
         self.auth_url = "https://accounts.spotify.com/authorize"
-        self.baseapi_url = "https://api.spotify.com/v1/"
+        self.baseapi_url = "https://api.spotify.com/v1/me/playlists"
     
     
     async def home(self):
@@ -34,7 +34,7 @@ class OAuth_Spotify:
         """Redirect the user to the auth url."""
         
         load_dotenv(dotenv_path="src/.env")
-        scope = 'user-read-private user-read-email'
+        scope = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative'
         params = {
             "client_id": os.getenv("CLIENT_ID"),
             "response_type": "code",
@@ -47,7 +47,7 @@ class OAuth_Spotify:
     
     
 
-    async def callback(self, request: Request):
+    async def auth_response(self, request: Request):
         
         """Post recquest to the api token url and redirecting to playlist endpoint."""
         
@@ -77,6 +77,7 @@ class OAuth_Spotify:
         
         """Playlist displayed as json document."""
         
+        
         if 'access_token' not in request.session:
             return RedirectResponse(url="/login")
         
@@ -84,7 +85,7 @@ class OAuth_Spotify:
             return RedirectResponse(url="/refresh-token")
         
         headers = {'Authorization': f"Bearer {request.session['access_token']}"}
-        response = requests.get(self.baseapi_url + 'me/playlists', headers=headers)
+        response = requests.get(self.baseapi_url, headers=headers,params={"limit": 50})
         playlists = response.json()
         return JSONResponse(content=playlists)
 

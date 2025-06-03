@@ -11,7 +11,7 @@ oauth = OAuth_Spotify()
 
 app.add_api_route("/", oauth.home, methods=["GET"])
 app.add_api_route("/login", oauth.login, methods=["GET"])
-app.add_api_route("/callback", oauth.callback, methods=["GET"])
+app.add_api_route("/callback", oauth.auth_response, methods=["GET"])
 app.add_api_route("/playlists", oauth.get_playlists, methods=["GET"])
 app.add_api_route("/refresh-token", oauth.refresh_token, methods=["GET"])
 
