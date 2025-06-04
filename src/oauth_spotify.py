@@ -86,9 +86,25 @@ class OAuth_Spotify:
         
         headers = {'Authorization': f"Bearer {request.session['access_token']}"}
         response = requests.get(self.baseapi_url, headers=headers,params={"limit": 50})
-        playlists = response.json()
-        return JSONResponse(content=playlists)
+        self.playlists = response.json()
+        return JSONResponse(content=self.playlists)
+    
+    
 
+    async def get_tracks(self,request:Request):
+        
+        playlists_list = self.playlists["items"]
+        
+        for dictionaries in playlists_list:
+            playlists_id = dictionaries["id"]
+            url_getplaylist = f"https://api.spotify.com/v1/playlists/{playlists_id}"
+            
+            headers = {f"Authorization": f"Bearer {request.session["access_token"]}"}
+            response = requests.get(url=url_getplaylist, headers=headers)
+            
+            return JSONResponse(content=response.json())
+        
+        
 
 
     async def refresh_token(self, request: Request):
@@ -112,3 +128,4 @@ class OAuth_Spotify:
             request.session["access_token"] = new_token_json_info["access_token"]
             request.session['expires_at'] = datetime.now().timestamp() + new_token_json_info['expires_in']
             return RedirectResponse("/playlists")
+        
