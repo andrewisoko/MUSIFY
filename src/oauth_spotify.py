@@ -5,6 +5,7 @@ import os
 from datetime import datetime
 import urllib.parse
 from dotenv import load_dotenv
+import json
 
 
 
@@ -93,16 +94,53 @@ class OAuth_Spotify:
 
     async def get_tracks(self,request:Request):
         
-        playlists_list = self.playlists["items"]
-        
-        for dictionaries in playlists_list:
-            playlists_id = dictionaries["id"]
+          
+        playlists_data = self.playlists
+        json_trial_list = []
+        playlists_items = playlists_data["items"] #list
+        playlist_dict_index = 0
+
+        for playlist_amount in range(len(playlists_items)):
+    
+            playlist_name = playlists_items[0]["name"]
+            playlists_id = playlists_items[0]["id"]
             url_getplaylist = f"https://api.spotify.com/v1/playlists/{playlists_id}"
-            
+    
+            # Request to access a playlist based on its id
+    
             headers = {f"Authorization": f"Bearer {request.session["access_token"]}"}
-            response = requests.get(url=url_getplaylist, headers=headers)
+            playlist_recquest = requests.get(url=url_getplaylist, headers=headers)
+    
+            single_playlist = playlist_recquest.json()
+            playlists_items.pop(playlist_dict_index)
+    
+    
+            track_info = []
+            track_items = single_playlist["tracks"]["items"]
+            tot_tracks_items = len(single_playlist["tracks"]["items"])
+    
+            track_index = 0
+    
+            while track_index < tot_tracks_items:
+                
+                track_dict = track_items[track_index]
+                artist_name = track_dict["track"]["album"]["artists"][0]["name"]
+                track_name = track_dict["track"]["name"]
+                
+                track_info.append(f'{artist_name} {track_name}')
+                
+                track_index += 1
+            json_trial_list.append({playlist_name:track_info})
+                
+        with open("all_tracks.json","w") as file:
+            json.dump(json_trial_list,file,indent=4)
             
-            return JSONResponse(content=response.json())
+        with open("all_tracks.json","r") as read_file:
+            all_tracks_file = json.load(read_file)
+            
+        return JSONResponse(content=all_tracks_file)
+     
+        
         
         
 
