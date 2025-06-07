@@ -4,9 +4,20 @@ import json
 import requests
 import os
 import yt_dlp
+from yt_dlp.utils import DownloadError
 
 
 class YoutubeDownloader():
+    
+    def __init__(self):
+        
+        self.playlists_json_data = None
+        self.trial_playlist = None
+        self.playlist_name = None
+        self.playlist_allsongs = None
+        self.yt_audio_endpoint = None
+        self.videoId_url_list = None
+        
     
     def retrieve_playlists(self):
         
@@ -19,20 +30,22 @@ class YoutubeDownloader():
         
         for key,value in self.trial_playlist.items():
             self.playlist_name = key
+            self.playlist_allsongs = value
             
         
       
         
     def youtube_audio_url(self):
         
-        """Passing json artist and song data on youtube endpoint to retrieve song url"""
-        
+        """Returns a list of youtube video urls ex:(https://www.youtube.com/watch?v=wLsWOxrB7N9)"""
+           
         
         search_url = "https://www.googleapis.com/youtube/v3/search"
         load_dotenv(dotenv_path="src/.env")
+        self.videoId_url_list = []
     
-        for song in self.trial_playlist:
-            song = self.trial_playlist[song][0] #trial
+        for tracks in range(len(self.playlist_allsongs)):
+            song = self.playlist_allsongs[0]
             
             params = {
                     "part": "snippet",
@@ -47,31 +60,54 @@ class YoutubeDownloader():
             
             
             self.yt_audio_endpoint = f'https://www.youtube.com/watch?v={videoId}'
-      
+             
+            self.videoId_url_list.append({self.playlist_allsongs[0]:self.yt_audio_endpoint})
+            self.playlist_allsongs.pop(0)
+            
+            
+        return self.videoId_url_list
         
         
     
     def download_audio_as_mp3(self):
          
-        """Downloads the audio song from youtube"""
+        """Downloads the audio song from the url youtube list."""
         
         project_dir = os.path.dirname(os.path.abspath(__file__))
-        target_dir = os.path.join(project_dir, '..', f"{self.playlist_name}") 
+        download_target_dir = os.path.join(project_dir, '..', f"{self.playlist_name}") 
+        ffmpeg_bin = os.path.abspath(os.path.join(project_dir, '.', 'ffmpeg', 'bin'))
+        
     
         ydl_opts = {
         
-            'paths': {'home': f'{target_dir}'},
             'format': 'bestaudio/best',
             'outtmpl': 'downloads/%(artist)s - %(title)s.%(ext)s',  
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',  
-                'preferredquality': '0', 
+                'preferredquality': '320', 
             }],
             'quiet': False,  
+            'paths': {'home': f'{download_target_dir}'},
+             'ffmpeg_location': ffmpeg_bin,
         }
+            
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    ydl.download([self.yt_audio_endpoint])
+            for audios in range((len(self.videoId_url_list))):
+                audio_url = self.videoId_url_list[0]
+                audio_name_songtitle = self.playlist_allsongs[0]
+                try:
+                    ydl.download([audio_url])
+                    self.videoId_url_list.pop(0)
+                    self.playlist_allsongs.pop(0)
+                    
+                    print(f"{audio_name_songtitle} MP3 file downloaded.")
+                    
+                except DownloadError as err:
+                    print(f"{audio_name_songtitle} WEBM file downloaded.\nPlease check {err}")
+                    self.videoId_url_list.pop(0)
+                    self.playlist_allsongs.pop(0)
+                        
 
 
 
@@ -80,5 +116,4 @@ class YoutubeDownloader():
 youtube_dow = YoutubeDownloader()
 youtube_dow.retrieve_playlists()
 youtube_dow.youtube_audio_url()
-
 print(youtube_dow.download_audio_as_mp3())

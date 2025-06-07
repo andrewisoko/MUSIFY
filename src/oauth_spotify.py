@@ -19,6 +19,8 @@ class OAuth_Spotify:
         self.redirect_uri = "http://127.0.0.1:8888/callback"
         self.auth_url = "https://accounts.spotify.com/authorize"
         self.baseapi_url = "https://api.spotify.com/v1/me/playlists"
+        self.url_getplaylist = None
+        self.playlists = None
     
     
     async def home(self):
@@ -105,12 +107,12 @@ class OAuth_Spotify:
     
             playlist_name = playlists_items[0]["name"]
             playlists_id = playlists_items[0]["id"]
-            url_getplaylist = f"https://api.spotify.com/v1/playlists/{playlists_id}"
+            self.url_getplaylist = f"https://api.spotify.com/v1/playlists/{playlists_id}"
     
             # Request to access a playlist based on its id
     
             headers = {f"Authorization": f"Bearer {request.session["access_token"]}"}
-            playlist_recquest = requests.get(url=url_getplaylist, headers=headers)
+            playlist_recquest = requests.get(url=self.url_getplaylist, headers=headers)
     
             single_playlist = playlist_recquest.json()
             playlists_items.pop(playlist_dict_index)
