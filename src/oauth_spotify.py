@@ -94,7 +94,8 @@ class OAuth_Spotify:
 
     async def get_tracks(self,request:Request):
         
-          
+        """Returns json file dictionary with all playlist and songs.""" 
+        
         playlists_data = self.playlists
         json_trial_list = []
         playlists_items = playlists_data["items"] #list
