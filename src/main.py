@@ -6,7 +6,7 @@ from oauth_spotify import OAuth_Spotify
 import uvicorn
 
 
-app = FastAPI(middleware=[Middleware(SessionMiddleware, secret_key=b"Add key.")])
+app = FastAPI(middleware=[Middleware(SessionMiddleware, secret_key="add key.")])
 oauth = OAuth_Spotify()
 
 app.add_api_route("/", oauth.home, methods=["GET"])

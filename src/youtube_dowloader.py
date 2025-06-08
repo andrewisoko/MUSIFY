@@ -27,7 +27,7 @@ class YoutubeDownloader():
         
         with open("all_tracks.json","r") as read_file:
             self.playlists_json_data = json.load(read_file)
-        
+            
         
         
         
@@ -39,9 +39,12 @@ class YoutubeDownloader():
         search_url = "https://www.googleapis.com/youtube/v3/search"
         load_dotenv(dotenv_path="src/.env")
         self.videoId_url_list = []
+        
+        index_track = 0
+
     
-        for tracks in range(len(self.playlist_allsongs)):
-            song = self.playlist_allsongs[0]
+        while len(self.playlist_allsongs) > index_track:
+            song = self.playlist_allsongs[index_track]
             
             params = {
                     "part": "snippet",
@@ -52,16 +55,17 @@ class YoutubeDownloader():
             
             response = requests.get(search_url, params=params)
             youtube_topfive_response = response.json()
+       
             videoId = youtube_topfive_response["items"][0]["id"]["videoId"]
             
             
             self.yt_audio_endpoint = f'https://www.youtube.com/watch?v={videoId}'
              
             self.videoId_url_list.append({self.playlist_allsongs[0]:self.yt_audio_endpoint})
-            self.playlist_allsongs.pop(0)
-        
-      
+            index_track += 1
+            
         return self.videoId_url_list
+    
       
         
         
@@ -91,20 +95,21 @@ class YoutubeDownloader():
             
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             for audios in range((len(self.videoId_url_list))):
-                audio_url = self.videoId_url_list[0]
+                dict_url = self.videoId_url_list[0]
+                for title_key, url in dict_url.items():
+                    audio_url = url
+                    
                 audio_name_songtitle = self.playlist_allsongs[0]
           
                 ydl.download([audio_url])
                 
+                print(f"{audio_name_songtitle} MP3 file downloaded.")
+                
                 self.videoId_url_list.pop(0)
                 self.playlist_allsongs.pop(0)
                     
-                print(f"{audio_name_songtitle} MP3 file downloaded.")
                     
              
-
-                        
-
 
     def download_all_playlists(self) -> str:
         
@@ -146,11 +151,12 @@ class YoutubeDownloader():
                 
                 self.youtube_audio_url()
                 self.download_audio_as_mp3()
-                
+                    
             return f"{user_choice} downloaded" 
         
         else:
             print('Playlist name not found')
+     
             
             
     def download_from_yt_link(self) -> str:
@@ -188,10 +194,5 @@ class YoutubeDownloader():
          
         
                 
-    
-    
-    
-    
-    
 
 
