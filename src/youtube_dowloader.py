@@ -1,9 +1,10 @@
 
-from dotenv import load_dotenv
+
 import json
 import requests
 import os
 import yt_dlp
+from yt_dlp import YoutubeDL
 from yt_dlp.utils import DownloadError
 
 
@@ -16,7 +17,7 @@ class YoutubeDownloader():
         self.json_all_playlists = None
         self.playlist_name = None
         self.playlist_allsongs = None
-        self.yt_audio_endpoint = None
+        self.yt_audio_url = None
         self.videoId_url_list = None
        
         
@@ -28,46 +29,36 @@ class YoutubeDownloader():
         with open("all_tracks.json","r") as read_file:
             self.playlists_json_data = json.load(read_file)
             
+
+      
+    
+    def youtube_audio_url(self) -> list: 
         
+        """Returns a list of youtube video urls ex:(https://www.youtube.com/watch?v=wLsWOxrB7N9)""" 
         
-        
-    def youtube_audio_url(self) -> list:
-        
-        """Returns a list of youtube video urls ex:(https://www.youtube.com/watch?v=wLsWOxrB7N9)"""
-           
-           
-        search_url = "https://www.googleapis.com/youtube/v3/search"
-        load_dotenv(dotenv_path="src/.env")
         self.videoId_url_list = []
         
         index_track = 0
 
-    
         while len(self.playlist_allsongs) > index_track:
             song = self.playlist_allsongs[index_track]
-            
-            params = {
-                    "part": "snippet",
-                    "q": f"{song}(Audio)",
-                    "maxResults": 5,
-                    "key": os.getenv("YT_API_KEY")
-                }
-            
-            response = requests.get(search_url, params=params)
-            youtube_topfive_response = response.json()
-       
-            videoId = youtube_topfive_response["items"][0]["id"]["videoId"]
-            
-            
-            self.yt_audio_endpoint = f'https://www.youtube.com/watch?v={videoId}'
-             
-            self.videoId_url_list.append({self.playlist_allsongs[0]:self.yt_audio_endpoint})
-            index_track += 1
-            
-        return self.videoId_url_list
-    
-      
-        
+                        
+            ydl_opts = {
+                'quiet': True,
+                'no_warnings': True,
+            }
+
+            with YoutubeDL(ydl_opts) as ydl:
+                result = ydl.extract_info(f"ytsearch1:{song}", download=False)
+                video = result['entries'][0]
+                self.yt_audio_url = (video['webpage_url'])
+                self.videoId_url_list.append({self.playlist_allsongs[0]:self.yt_audio_url})
+                index_track += 1
+                    
+            return self.videoId_url_list           
+         
+         
+          
         
     
     def download_audio_as_mp3(self) -> str:
@@ -194,5 +185,3 @@ class YoutubeDownloader():
          
         
                 
-
-
