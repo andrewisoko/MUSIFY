@@ -6,8 +6,10 @@
 }
 
 .logo {
+
   height: 200px;
-  padding: 1.5em;
-   margin-left: -50px;
+  padding: 0.5em;
+  margin-top: -100px; 
+  margin-left: -50px;
 }
 

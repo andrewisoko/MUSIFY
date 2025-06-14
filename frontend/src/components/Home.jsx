@@ -1,5 +1,6 @@
 import "../css/Home.css"
 import logo from '../assets/logo.png';
+import Footer from "./Footer";
 
 function Home() {
   return (
@@ -17,11 +18,10 @@ function Home() {
                     <rect x="5" y="17" width="12" height="2" rx="1" fill="#fff"/>
                     </svg>
                 </button>
-            </div>
-            
+            </div>   
       </header>
-      <main>
-      </main>
+      <Footer/>
+
     </div>
   );
 };
