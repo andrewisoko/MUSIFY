@@ -1,0 +1,99 @@
+/* Home.css */
+
+.home {
+    padding: 20px;
+}
+
+.home-texts {
+
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+/* spotify button */
+
+.spotify-login-btn {
+
+  color: #fff;
+  margin-top: 62px;
+  background-color: #1db954;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 500px;
+  padding: 18px 48px 16px;
+  border: none;
+  letter-spacing: 2px;
+  min-width: 160px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.spotify-login-btn:hover {
+  background-color: #1ed760;
+  box-shadow: 0 4px 16px rgba(30,215,96,0.3);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.spotify-login-btn:active {
+  background-color: #169c46;
+  box-shadow: 0 2px 4px rgba(30,215,96,0.2);
+  transform: translateY(1px) scale(0.98);
+}
+
+
+/* search button*/
+
+.download-bar {
+  display: flex;
+  align-items: center;
+  width: 320px;
+  height: 40px;  
+  background: transparent;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 0 auto;
+  margin-top: 40px;
+}
+
+.download-input {
+  flex: 1;
+  border: none;
+  padding: 0px 8px;
+  font-size: 14px;
+  height: 100%; 
+  border-radius: 12px 0 0 12px;
+  outline: none;
+  background: #fff;
+  color: #222;
+}
+
+.download-input::placeholder {
+  color: #888;
+  padding: 0px 8px;
+  font-size: 14px;
+}
+
+.download-btn {
+  background: #e53935; 
+  border: none;
+  border-radius: 0 12px 12px 0;
+  height: 100%;
+  width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.download-btn:hover {
+  background: #b71c1c;
+}
+
+.download-btn svg {
+  display: block;
+}
