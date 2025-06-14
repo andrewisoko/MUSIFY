@@ -1,13 +1,11 @@
 import "../css/Home.css"
+import logo from '../assets/logo.png';
 
 function Home() {
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Musify</h1>
-        <p>
-          <strong>Playlists And Audio Downloader</strong>
-          </p>
+      <header>
+        <img src={logo}  className="logo"  alt="Logo" />
           <p className="home-texts">Log in to your Spotify account to download your favourite playlist or insert url to download audio.</p>
           <button className="spotify-login-btn">Login With Spotify</button>
             <div class="download-bar">
@@ -21,7 +19,6 @@ function Home() {
                 </button>
             </div>
             
-
       </header>
       <main>
       </main>
