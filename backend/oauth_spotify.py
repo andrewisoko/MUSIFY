@@ -27,17 +27,17 @@ class OAuth_Spotify:
         
         """The first page from local address, provides the spotify login page link"""
         
-        content = "Welcome to Musify<br>Please click the link to log in <a href='/login'>Spotify Log In</a>"
+        content = "Welcome to Musify<br>Please click the link to log in <a href='/spot-login'>Spotify Log In</a>"
         return Response(content=content, media_type="text/html")
     
     
 
-    async def login(self, request: Request):
+    async def spotify_login(self, request: Request):
         
         """Redirect the user to the auth url."""
         
-        load_dotenv(dotenv_path="src/.env")
-        scope = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative'
+        load_dotenv(".env")
+        scope = 'playlist-read-collaborative'
         params = {
             "client_id": os.getenv("CLIENT_ID"),
             "response_type": "code",
@@ -54,7 +54,7 @@ class OAuth_Spotify:
         
         """Post recquest to the api token url and redirecting to playlist endpoint."""
         
-        load_dotenv(dotenv_path="src/.env")
+        load_dotenv(".env")
         if 'error' in request.query_params:
             return {"error": request.query_params['error']}
         
@@ -82,7 +82,7 @@ class OAuth_Spotify:
         
         
         if 'access_token' not in request.session:
-            return RedirectResponse(url="/login")
+            return RedirectResponse(url="/spot-login")
         
         elif datetime.now().timestamp() > request.session.get('expires_at', 0):
             return RedirectResponse(url="/refresh-token")
@@ -152,10 +152,11 @@ class OAuth_Spotify:
         
         """Handles expired refrsh token by providing new tokens if the latter is expired, for then redirecting to the playlist endpoint."""
         
+        load_dotenv(".env")
         refresh_token = request.session.get('refresh_token')
         
         if not refresh_token:
-            return RedirectResponse("/login")
+            return RedirectResponse("/spot-login")
         
         elif datetime.now().timestamp() > request.session.get('expires_at', 0):
             request_body = {
