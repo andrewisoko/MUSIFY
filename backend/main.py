@@ -14,7 +14,7 @@ origins = [
     "http://localhost:5173"
            ]
 
-app = FastAPI(middleware=[Middleware(SessionMiddleware, secret_key="add key.")])
+app = FastAPI(middleware=[Middleware(SessionMiddleware, secret_key= "add key.")])
 app.add_middleware(CORSMiddleware,
                    allow_origins = origins,
                    allow_credentials = True,

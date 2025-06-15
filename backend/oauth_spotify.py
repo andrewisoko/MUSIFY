@@ -72,7 +72,7 @@ class OAuth_Spotify:
             request.session['refresh_token'] = token_json_info['refresh_token']
             request.session['expires_at'] = datetime.now().timestamp() + token_json_info['expires_in']
     
-            return RedirectResponse('/playlists')
+            return RedirectResponse('http://localhost:5173/playlists')
 
 
 
