@@ -14,7 +14,12 @@ function Playlists() {
 
   return (
           <div >
-             <h2>Your Playlists</h2>
+             <h1>Playlists</h1>
+              <br></br>
+             <p>Load the playlist songs to download by clicking the playlist image. </p>
+             <p>After the playlists load, click the folder icon on a playlist to download it. </p>
+             <p>If songs are not 100% accurate it is advised to download the specific song with the download search bar at the home page.</p>
+             <p>Enjoy your music.</p>
             <div className="pl-list">
                 {playlists.map(pl => ( <PlaylistCards
                   key={pl.id}
