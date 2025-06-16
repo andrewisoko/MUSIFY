@@ -22,7 +22,7 @@ app.add_middleware(
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key="add key."
+    secret_key=""
 )
 
 app.add_api_route("/", oauth.home, methods=["GET"])
