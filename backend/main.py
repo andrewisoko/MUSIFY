@@ -1,27 +1,29 @@
-
 from fastapi import FastAPI
-from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from oauth_spotify import OAuth_Spotify
 import uvicorn
 
-
-
 oauth = OAuth_Spotify()
 
 origins = [
-    "http://localhost:5173"
-           ]
+    "http://127.0.0.1:5173",
+]
 
-app = FastAPI(middleware=[Middleware(SessionMiddleware, secret_key= "add key.")])
-app.add_middleware(CORSMiddleware,
-                   allow_origins = origins,
-                   allow_credentials = True,
-                   allow_methods = ["*"],
-                   allow_headers = ["*"],
-                   )
+app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key="add key."
+)
 
 app.add_api_route("/", oauth.home, methods=["GET"])
 app.add_api_route("/spot-login", oauth.spotify_login, methods=["GET"])
