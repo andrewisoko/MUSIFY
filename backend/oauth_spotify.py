@@ -1,7 +1,6 @@
 from fastapi import Request
 from fastapi.responses import Response, RedirectResponse, JSONResponse
 import httpx
-import asyncio
 import os
 from datetime import datetime
 import urllib.parse

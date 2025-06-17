@@ -1,96 +1,103 @@
 
-
-.pl-list {
-  padding-top: 40px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); 
-  gap: 32px; 
-  justify-items: center; 
-  align-items: start;
-  margin: 0 auto;
-  max-width: 1200px; 
-}
-
-@media (max-width: 900px) {
-  .pl-list {
-    grid-template-columns: 1fr; 
-  }
-}
-
-
-
 .pl-card {
   position: relative;
   border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 22px 16px 23px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
-  height: 100%; 
+  background: #181818;
   width: 180px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  padding: 16px;
+}
 
-} 
-
-.pl-card:hover{
-  transform: scale(1.04);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+.pl-card:hover {
+  background: #545454;
   cursor: pointer;
 }
 
 .pl-poster {
   position: relative;
-  height: 180px;
   width: 180px;
+  height: 180px;
   overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.pl-card:hover .pl-poster {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
 }
 
 .pl-poster img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block; /
+  transition: all 0.3s ease;
 }
 
-@media (max-width: 768px) {
-  .pl-poster {
-    height: 250px;
-  }
+.pl-card:hover .pl-poster img {
+  filter: brightness(0.9);
 }
 
-@media (min-width: 1200px) {
-  .pl-poster {
-    height: 400px;
-  }
-}
-
-
-
-.pl-title{
-    margin-top: 0px;
-    color: #fff; 
-    font-family:'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 16px;
+.pl-title {
+  padding: 10px 0;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pl-songs {
   display: flex;
-  justify-content: center;    
   align-items: center;
-  font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 1rem;
+  justify-content: space-between;
+  padding: 6px 0;
   color: #b3b3b3;
-  margin-top: 0.3em;
-  margin-bottom: 0.3em;
-  width: 100%;
-  gap: 10em;                 
+  font-size: 0.875rem;
 }
 
 .folder-style {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
 }
 
-.song-count {
-  color: #b3b3b3;
-  font-weight: 400;
+.pl-card:hover .folder-style {
+  opacity: 1;
+}
+
+.download-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.pl-card:hover .download-overlay {
+  opacity: 1;
+}
+
+.download-icon {
+  width: 80px;
+  height: 80px;
+  background-color: #1db954;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.download-icon:hover{
+   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
 }

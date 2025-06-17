@@ -1,0 +1,52 @@
+.pl-page-wrapper {
+  background: linear-gradient(to bottom, #6a217e, #d44a8b);
+  padding: 32px;
+}
+
+.pl-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 32px;
+  padding: 40px;
+  justify-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+
+
+  .pl-page-wrapper {
+  background: linear-gradient(to bottom, #6a217e, #d44a8b);
+  padding: 70px;
+}
+
+  .pl-list {
+    grid-template-columns: 1fr; 
+    gap: 16px; 
+    padding: 16px;
+  }
+
+  .pl-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .pl-poster {
+    width: 100%;
+    height: auto; /* Adjust height or use aspect ratio */
+  }
+
+  .pl-poster img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .pl-title,
+  .pl-songs {
+    padding-left: 8px;
+    padding-right: 8px;
+    text-align: center; 
+  }
+}

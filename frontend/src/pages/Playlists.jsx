@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../services/api"; 
 import PlaylistCards from "./PlaylistCards";
-import "../css/PlaylistCards.css";
+import "../css/Playlists.css";
+import Footer from "../components/Footer";
 
 function Playlists() {
   const [playlists, setPlaylists] = useState([]);
@@ -13,7 +14,7 @@ function Playlists() {
   }, []);
 
   return (
-          <div >
+          <div className="pl-page-wrapper">
              <h1>Playlists</h1>
               <br></br>
              <p>Load the playlist songs to download by clicking the playlist image. </p>
@@ -31,6 +32,7 @@ function Playlists() {
                   />
                 ))}
             </div>
+               <Footer/>
           </div>
   );
 }
