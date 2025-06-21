@@ -3,14 +3,30 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from oauth_spotify import OAuth_Spotify
 import uvicorn
+from youtube_dowloader import * 
+from pydantic import BaseModel
 
-oauth = OAuth_Spotify()
 
 origins = [
     "http://127.0.0.1:5173",
 ]
 
+
 app = FastAPI()
+downloader = YoutubeDownloader()  
+oauth = OAuth_Spotify()
+
+class PlaylistRequest(BaseModel):
+    playlist_name: str
+
+
+@app.post("/download-playlist")
+async def download_playlist(data:PlaylistRequest):
+    downloader.retrieve_playlists()
+    result = downloader.download_selected_playlist(data.playlist_name)
+    return {"message": result}
+
+
 
 app.add_middleware(
     CORSMiddleware,

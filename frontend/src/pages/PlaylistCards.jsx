@@ -3,6 +3,7 @@ import "../css/PlaylistCards.css";
 import folder from "../assets/folder.png";
 import download from "../assets/download.png";
 import api from "../services/api"
+import tracksData from "../services/allTracks.json"
 
 
 
@@ -10,21 +11,29 @@ function PlaylistCards({ pl_item: plItem }) {
 
   api.get("/tracks")
 
-  function playlistName() {
+  function playlistTracksLoad() {
+    
+    const titleList = []
 
-    if (plItem.name){
-      console.log("YAH MAN")
+    for (const item of tracksData) {
+      for (const [key, values] of Object.entries(item)) {
+        titleList.push(key)
+          }
+        }
+    if (titleList.includes(plItem.name)){
+      const playlistName = plItem.name
+      api.post("/download-playlist",{playlist_name:playlistName})
     }else{
-      console.log("Not here")
+      console.log("NOO")
     }
   }
-
+  
   return (
     <div className="pl-card">
       <div className="pl-poster">
         <img src={plItem.url} alt={plItem.name} />
         <div className="download-overlay">
-          <button className="download-icon" onClick={playlistName}>
+          <button className="download-icon" onClick={playlistTracksLoad}>
             <img src={download} style={{ width: '30px', height: '30px'}}alt="download" />
           </button>
         </div>

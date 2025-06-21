@@ -1,11 +1,9 @@
-
-
 import json
-import requests
 import os
 import yt_dlp
 from yt_dlp import YoutubeDL
 from yt_dlp.utils import DownloadError
+
 
 
 class YoutubeDownloader():
@@ -19,6 +17,10 @@ class YoutubeDownloader():
         self.playlist_allsongs = None
         self.yt_audio_url = None
         self.videoId_url_list = None
+        self.project_dir = os.path.dirname(os.path.abspath(__file__))
+        self.parent_directory = os.path.dirname(self.project_dir)
+       
+            
        
         
     
@@ -26,7 +28,10 @@ class YoutubeDownloader():
         
         """Creates a instance attribute of all_tracks.json file."""
         
-        with open("all_tracks.json","r") as read_file:
+        
+        load_path = os.path.join(self.parent_directory,"frontend","src","services")
+        
+        with open(f"{load_path}/allTracks.json","r") as read_file:
             self.playlists_json_data = json.load(read_file)
             
 
@@ -53,9 +58,9 @@ class YoutubeDownloader():
                 video = result['entries'][0]
                 self.yt_audio_url = (video['webpage_url'])
                 self.videoId_url_list.append({self.playlist_allsongs[0]:self.yt_audio_url})
-                index_track += 1
+            index_track += 1
                     
-            return self.videoId_url_list           
+        return self.videoId_url_list           
          
          
           
@@ -65,9 +70,11 @@ class YoutubeDownloader():
          
         """Downloads the audio song from the url youtube list."""
         
-        project_dir = os.path.dirname(os.path.abspath(__file__))
-        download_target_dir = os.path.join(project_dir, '..', f"{self.playlist_name}") 
-        ffmpeg_bin = os.path.abspath(os.path.join(project_dir, '.', 'ffmpeg', 'bin'))
+            
+        dl_path = os.path.join(self.parent_directory,"frontend","src","playlistsfolder")
+         
+        download_target_dir = os.path.join(dl_path, f"{self.playlist_name}") 
+        ffmpeg_bin = os.path.abspath(os.path.join(self.project_dir, '.', 'ffmpeg', 'bin'))
         
     
         ydl_opts = {
@@ -100,39 +107,17 @@ class YoutubeDownloader():
                 self.playlist_allsongs.pop(0)
                     
                     
-             
-
-    def download_all_playlists(self) -> str:
-        
-        """Downloads all playlists' songs from spotify account."""
-        
-        count = 0
-            
-        while len(self.playlists_json_data) > count:
-            
-            playlist_selected = self.playlists_json_data[count]
-            
-            for key,value in playlist_selected.items():
-                self.playlist_name = key
-                self.playlist_allsongs = value
-                
-                self.youtube_audio_url()
-                self.download_audio_as_mp3()
-                count += 1
-                
-        return "All music downloaded"
-    
 
 
-    def download_selected_playlist(self) -> str:
+
+    def download_selected_playlist(self,playlist_name) -> str:
         
         """Downloads spotify playlist based on user choice."""
         
         playlist_name_list = [plst_name for dictionaries in self.playlists_json_data for plst_name,values in dictionaries.items()]
-        user_choice = input("insert name of desired playlist: ")
-        
-        if user_choice in playlist_name_list:
-            index = playlist_name_list.index(user_choice)
+       
+        if playlist_name in playlist_name_list:
+            index = playlist_name_list.index(playlist_name)
                
             playlist_selected = self.playlists_json_data[index]
         
@@ -143,7 +128,7 @@ class YoutubeDownloader():
                 self.youtube_audio_url()
                 self.download_audio_as_mp3()
                     
-            return f"{user_choice} downloaded" 
+            return f"{playlist_name} downloaded" 
         
         else:
             print('Playlist name not found')
@@ -155,10 +140,11 @@ class YoutubeDownloader():
         """Downloads audio direclty from youtube."""
         
         user_link = input("paste youtube audio's link to download: ")
+
+        dl_path = os.path.join(self.parent_directory,"frontend","src","audiosfolder")
         
-        project_dir = os.path.dirname(os.path.abspath(__file__))
-        download_target_dir = os.path.join(project_dir, '..', "Youtube Downloads") 
-        ffmpeg_bin = os.path.abspath(os.path.join(project_dir, '.', 'ffmpeg', 'bin'))
+        download_target_dir = os.path.join(dl_path, "Youtube Downloads") 
+        ffmpeg_bin = os.path.abspath(os.path.join(self.project_dir, '.', 'ffmpeg', 'bin'))
         
     
         ydl_opts = {
