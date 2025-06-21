@@ -2,6 +2,7 @@ from fastapi import Request
 from fastapi.responses import Response, RedirectResponse, JSONResponse
 import httpx
 import os
+from pathlib import Path
 from datetime import datetime
 import urllib.parse
 from dotenv import load_dotenv
@@ -27,6 +28,7 @@ class OAuth_Spotify:
         self.playlists = None
         self.client_id = os.getenv("CLIENT_ID")
         self.client_secret = os.getenv("CLIENT_SECRET")
+ 
     
     
     
@@ -79,6 +81,8 @@ class OAuth_Spotify:
                 request.session['access_token'] = token_json_info['access_token']
                 request.session['refresh_token'] = token_json_info['refresh_token']
                 request.session['expires_at'] = datetime.now().timestamp() + token_json_info['expires_in']
+                  
+              
             
             return RedirectResponse('http://127.0.0.1:5173/playlists')
 
@@ -99,40 +103,54 @@ class OAuth_Spotify:
         async with httpx.AsyncClient() as client:
             response = await client.get(self.baseapi_url, headers=headers,params={"limit": 50})
             self.playlists = response.json()
+            
            
         return JSONResponse(content=self.playlists)
     
     
 
     async def get_tracks(self, request: Request):
-        playlists_data = self.playlists
-        json_trial_list = []
-        for playlist in playlists_data["items"]:
-            playlist_name = playlist["name"]
-            playlists_id = playlist["id"]
-            self.url_getplaylist = f"https://api.spotify.com/v1/playlists/{playlists_id}"
-
-            headers = {"Authorization": f"Bearer {request.session['access_token']}"}
-            async with httpx.AsyncClient() as client:
-                playlist_request = await client.get(url=self.url_getplaylist, headers=headers)
-                single_playlist = playlist_request.json()
-
-            track_info = []
-            track_items = single_playlist["tracks"]["items"]
-            for track_dict in track_items:
-                artist_name = track_dict["track"]["album"]["artists"][0]["name"]
-                track_name = track_dict["track"]["name"]
-                track_info.append(f'{artist_name} {track_name}')
-            json_trial_list.append({playlist_name: track_info})
-
-        with open("all_tracks.json", "w") as file:
-            json.dump(json_trial_list, file, indent=4)
-
-        return JSONResponse(content=json_trial_list)
-
         
-        
-        
+        cache_file = Path("all_tracks.json")
+    
+        # Return cached data if file exists and is recent (e.g., <1 hour old)
+        if cache_file.exists() and (time.time() - cache_file.stat().st_mtime < 3600):
+            with open(cache_file) as f:
+                return JSONResponse(content=json.load(f))
+        else:
+            playlists_data = self.playlists
+            json_trial_list = []
+            for playlist in playlists_data["items"]:
+                playlist_name = playlist["name"]
+                playlists_id = playlist["id"]
+                self.url_getplaylist = f"https://api.spotify.com/v1/playlists/{playlists_id}"
+
+                headers = {"Authorization": f"Bearer {request.session['access_token']}"}
+                async with httpx.AsyncClient() as client:
+                    playlist_request = await client.get(url=self.url_getplaylist, headers=headers)
+                    single_playlist = playlist_request.json()
+
+                track_info = []
+                track_items = single_playlist["tracks"]["items"]
+                for track_dict in track_items:
+                    artist_name = track_dict["track"]["album"]["artists"][0]["name"]
+                    track_name = track_dict["track"]["name"]
+                    track_info.append(f'{artist_name} {track_name}')
+                json_trial_list.append({playlist_name: track_info})
+                
+            directory_path = os.path.abspath(__file__)
+            parent_directory = os.path.dirname(directory_path)
+            grandparent_dir = os.path.dirname(parent_directory)
+            
+            dump_path = os.path.join(grandparent_dir,"frontend","src","services")
+            
+            with open(f"{dump_path}/allTracks.json", "w") as file:
+                json.dump(json_trial_list, file, indent=4)
+
+            return JSONResponse(content=json_trial_list)
+
+            
+            
     async def refresh_token(self, request: Request):
         
         """Handles expired refrsh token by providing new tokens if the latter is expired, for then redirecting to the playlist endpoint."""

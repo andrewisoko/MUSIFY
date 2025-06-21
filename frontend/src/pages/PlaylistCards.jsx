@@ -8,8 +8,8 @@ import api from "../services/api"
 
 function PlaylistCards({ pl_item: plItem }) {
 
-  const allTracks = api.get("/tracks")
-  
+  api.get("/tracks")
+
   function playlistName() {
 
     if (plItem.name){
