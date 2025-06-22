@@ -28,6 +28,10 @@ class OAuth_Spotify:
         self.playlists = None
         self.client_id = os.getenv("CLIENT_ID")
         self.client_secret = os.getenv("CLIENT_SECRET")
+        self.directory_path = os.path.abspath(__file__)
+        self.parent_directory = os.path.dirname(self.directory_path)
+        self.grandparent_dir = os.path.dirname(self.parent_directory)
+        self.cache_lifespan = 10800
  
     
     
@@ -92,31 +96,60 @@ class OAuth_Spotify:
         
         """Playlist displayed as json document."""
         
+        cache_path = Path("playlists_cache.json")
+        
+        
+        
+        # if data exists json data cache exists it will be accessed for an hour.
+        
+        if cache_path.exists() and (time.time() - cache_path.stat().st_mtime < self.cache_lifespan):
+            with open(cache_path, "r") as f:
+                self.playlists = json.load(f)
+                print("Using current playlist cache")
+             
+            return JSONResponse(content=self.playlists)
         
         if 'access_token' not in request.session:
             return RedirectResponse(url="/spot-login")
-        
+            
         elif datetime.now().timestamp() > request.session.get('expires_at', 0):
             return RedirectResponse(url="/refresh-token")
         
-        headers = {'Authorization': f"Bearer {request.session['access_token']}"}
-        async with httpx.AsyncClient() as client:
-            response = await client.get(self.baseapi_url, headers=headers,params={"limit": 50})
-            self.playlists = response.json()
-            
-           
+        
+        else:
+            headers = {'Authorization': f"Bearer {request.session['access_token']}"}
+            async with httpx.AsyncClient() as client:
+                response = await client.get(self.baseapi_url, headers=headers,params={"limit": 50})
+                
+               #After the first request the data gets stored in a json file to avoid too many API calls.
+                try:
+                    self.playlists = response.json()
+                    with open(cache_path, "w") as f:
+                      json.dump(self.playlists, f,indent=4)
+                      print(f"playlist json file generated at {time.ctime(cache_path.stat().st_mtime)}")
+                    
+                    
+                except Exception as err:
+                    print("Status code:", response.status_code, {err})
+                    print("Response content:", response.text)
+                    
         return JSONResponse(content=self.playlists)
     
     
 
     async def get_tracks(self, request: Request):
-        
-        cache_file = Path("all_tracks.json")
     
+        """Returns a list of all tracks in a playlist"""
+        
+        cache_file = Path(self.grandparent_dir, "frontend", "src","services","allTracks.json")
+        
+
         # Return cached data if file exists and is recent (e.g., <1 hour old)
-        if cache_file.exists() and (time.time() - cache_file.stat().st_mtime < 3600):
+        if cache_file.exists() and (time.time() - cache_file.stat().st_mtime < self.cache_lifespan):
             with open(cache_file) as f:
+                print("Using current all_tracks cache")
                 return JSONResponse(content=json.load(f))
+
         else:
             playlists_data = self.playlists
             json_trial_list = []
@@ -128,7 +161,12 @@ class OAuth_Spotify:
                 headers = {"Authorization": f"Bearer {request.session['access_token']}"}
                 async with httpx.AsyncClient() as client:
                     playlist_request = await client.get(url=self.url_getplaylist, headers=headers)
-                    single_playlist = playlist_request.json()
+                    
+                    try:
+                     single_playlist = playlist_request.json()
+                    except Exception as err:
+                        print("Status code:", playlist_request.status_code)
+                        print("Response content:", playlist_request.text)
 
                 track_info = []
                 track_items = single_playlist["tracks"]["items"]
@@ -138,11 +176,9 @@ class OAuth_Spotify:
                     track_info.append(f'{artist_name} {track_name}')
                 json_trial_list.append({playlist_name: track_info})
                 
-            directory_path = os.path.abspath(__file__)
-            parent_directory = os.path.dirname(directory_path)
-            grandparent_dir = os.path.dirname(parent_directory)
+         
             
-            dump_path = os.path.join(grandparent_dir,"frontend","src","services")
+            dump_path = os.path.join(self.grandparent_dir,"frontend","src","services")
             
             with open(f"{dump_path}/allTracks.json", "w") as file:
                 json.dump(json_trial_list, file, indent=4)

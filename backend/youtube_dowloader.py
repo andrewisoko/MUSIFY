@@ -63,17 +63,12 @@ class YoutubeDownloader():
         return self.videoId_url_list           
          
          
-          
         
-    
     def download_audio_as_mp3(self) -> str:
          
         """Downloads the audio song from the url youtube list."""
         
-            
-        dl_path = os.path.join(self.parent_directory,"frontend","src","playlistsfolder")
-         
-        download_target_dir = os.path.join(dl_path, f"{self.playlist_name}") 
+        download_target_dir = os.path.join(self.project_dir, f"{self.playlist_name}") 
         ffmpeg_bin = os.path.abspath(os.path.join(self.project_dir, '.', 'ffmpeg', 'bin'))
         
     
@@ -140,10 +135,8 @@ class YoutubeDownloader():
         """Downloads audio direclty from youtube."""
         
         user_link = input("paste youtube audio's link to download: ")
-
-        dl_path = os.path.join(self.parent_directory,"frontend","src","audiosfolder")
         
-        download_target_dir = os.path.join(dl_path, "Youtube Downloads") 
+        download_target_dir = os.path.join(self.project_dir, "Youtube Downloads") 
         ffmpeg_bin = os.path.abspath(os.path.join(self.project_dir, '.', 'ffmpeg', 'bin'))
         
     

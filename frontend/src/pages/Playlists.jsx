@@ -20,6 +20,7 @@ function Playlists() {
              <p>Load the playlist songs to download by clicking the playlist image. </p>
              <p>After the playlists load, click the folder icon on a playlist to download it. </p>
              <p>If songs are not 100% accurate it is advised to download the specific song with the download search bar at the home page.</p>
+             <p>Click the folder icon once the download spinner ends.</p>
              <p>Enjoy your music.</p>
             <div className="pl-list">
                 {playlists.map(pl => ( <PlaylistCards
