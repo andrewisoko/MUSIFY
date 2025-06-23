@@ -31,7 +31,7 @@ class OAuth_Spotify:
         self.directory_path = os.path.abspath(__file__)
         self.parent_directory = os.path.dirname(self.directory_path)
         self.grandparent_dir = os.path.dirname(self.parent_directory)
-        self.cache_lifespan = 10800
+        self.cache_lifespan = 3600
  
     
     

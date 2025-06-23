@@ -3,6 +3,7 @@ import os
 import yt_dlp
 from yt_dlp import YoutubeDL
 from yt_dlp.utils import DownloadError
+import time
 
 
 
@@ -29,7 +30,7 @@ class YoutubeDownloader():
         """Creates a instance attribute of all_tracks.json file."""
         
         
-        load_path = os.path.join(self.parent_directory,"frontend","src","services")
+        load_path = os.path.join(self.parent_directory,"frontend","public","services")
         
         with open(f"{load_path}/allTracks.json","r") as read_file:
             self.playlists_json_data = json.load(read_file)
@@ -123,10 +124,13 @@ class YoutubeDownloader():
                 self.youtube_audio_url()
                 self.download_audio_as_mp3()
                     
-            return f"{playlist_name} downloaded" 
+        time.sleep(60)
+        plst_path = os.path.join(self.project_dir,playlist_name)
+        print("directory found")
+        os.rmdir(path=plst_path)
         
-        else:
-            print('Playlist name not found')
+        # else:
+        #     print('Playlist name not found')
      
             
             
@@ -164,3 +168,6 @@ class YoutubeDownloader():
          
         
                 
+
+        
+       
