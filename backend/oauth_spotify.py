@@ -49,7 +49,6 @@ class OAuth_Spotify:
         
         """Redirect the user to the auth url."""
         
-        load_dotenv(".env")
         scope = 'playlist-read-collaborative'
         params = {
             "client_id":f"{self.client_id}",
@@ -141,7 +140,7 @@ class OAuth_Spotify:
     
         """Returns a list of all tracks in a playlist"""
         
-        cache_file = Path(self.grandparent_dir, "frontend", "src","services","allTracks.json")
+        cache_file = Path(self.grandparent_dir, "frontend", "public","services","allTracks.json")
         
 
         # Return cached data if file exists and is recent (e.g., <1 hour old)
@@ -178,7 +177,7 @@ class OAuth_Spotify:
                 
          
             
-            dump_path = os.path.join(self.grandparent_dir,"frontend","src","services")
+            dump_path = os.path.join(self.grandparent_dir,"frontend","public","services")
             
             with open(f"{dump_path}/allTracks.json", "w") as file:
                 json.dump(json_trial_list, file, indent=4)
@@ -207,6 +206,7 @@ class OAuth_Spotify:
                 
                 response = await client.post(url=self.url_account_apitoken, data=request_body)
                 new_token_json_info = response.json()
+             
                 request.session["access_token"] = new_token_json_info["access_token"]
                 request.session['expires_at'] = datetime.now().timestamp() + new_token_json_info['expires_in']
             return RedirectResponse("/playlists")

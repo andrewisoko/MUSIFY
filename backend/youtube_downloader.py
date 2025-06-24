@@ -20,10 +20,9 @@ class YoutubeDownloader():
         self.videoId_url_list = None
         self.project_dir = os.path.dirname(os.path.abspath(__file__))
         self.parent_directory = os.path.dirname(self.project_dir)
+     
        
-            
-       
-        
+             
     
     def retrieve_playlists(self):
         
@@ -69,7 +68,7 @@ class YoutubeDownloader():
          
         """Downloads the audio song from the url youtube list."""
         
-        download_target_dir = os.path.join(self.project_dir, f"{self.playlist_name}") 
+        download_target_dir = os.path.join(self.playlist_name)
         ffmpeg_bin = os.path.abspath(os.path.join(self.project_dir, '.', 'ffmpeg', 'bin'))
         
     
@@ -114,7 +113,7 @@ class YoutubeDownloader():
        
         if playlist_name in playlist_name_list:
             index = playlist_name_list.index(playlist_name)
-               
+            
             playlist_selected = self.playlists_json_data[index]
         
             for key,value in playlist_selected.items():
@@ -123,18 +122,25 @@ class YoutubeDownloader():
                 
                 self.youtube_audio_url()
                 self.download_audio_as_mp3()
-                    
-        time.sleep(60)
-        plst_path = os.path.join(self.project_dir,playlist_name)
-        print("directory found")
-        os.rmdir(path=plst_path)
+            
         
-        # else:
-        #     print('Playlist name not found')
-     
+    
+    def delete_playlist(self):
+        
+        """Deletes playlists directory after a minute"""
+        
+        time.sleep(70)
+        plst_path = os.path.join(self.project_dir,self.playlist_name,"downloads")
+        list_audios = os.listdir(plst_path)
+        for audio_file in list_audios:
+            os.remove(os.path.join(plst_path,audio_file))
+        os.rmdir(path=plst_path)
+        os.rmdir(os.path.dirname(plst_path))
+            
+        
             
             
-    def download_from_yt_link(self) -> str:
+    async def download_from_yt_link(self) -> str:
         
         """Downloads audio direclty from youtube."""
         

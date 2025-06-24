@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useRef,useState } from "react";
 import "../css/PlaylistCards.css";
 import folder from "../assets/folder.png";
 import download from "../assets/download.png";
@@ -7,9 +7,12 @@ import api from "../services/api"
 
 
 function PlaylistCards({ pl_item: plItem, tracksData }) {
-  
+
   const [downloading, setDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
+  const [downloadLinkDisabled, setDownloadLinkDisabled] = useState(false);
+  const timerRef = useRef(null);
+
 
   function playlistTracksLoad() {
     const titleList = [];
@@ -20,10 +23,19 @@ function PlaylistCards({ pl_item: plItem, tracksData }) {
     }
     if (titleList.includes(plItem.name)) {
       setDownloading(true);
-      api.post("/download-playlist", { playlist_name: plItem.name })
+      api.post("/download-playlist", {playlist_name: plItem.name})
         .then(() => {
           setDownloading(false);
           setDownloaded(true);
+          
+          api.get("/delete-playlist")
+          
+           timerRef.current = setTimeout(() => {
+            setDownloadLinkDisabled(true);        
+              api.get(`/delete-zipplaylist?playlist_name=${encodeURIComponent(plItem.name)}`)
+            .catch(err => console.error("Error deleting zip playlist:", err));
+          }, 60000);
+
         })
         .catch(() => {
           setDownloading(false);
@@ -31,7 +43,15 @@ function PlaylistCards({ pl_item: plItem, tracksData }) {
     } else {
       console.log("No playlist data");
     }
-  }
+  };
+
+  React.useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+
 
   const downloadZip = () => {
     const downloadUrl = `http://127.0.0.1:8888/api/download/${encodeURIComponent(plItem.name)}`;
@@ -66,8 +86,18 @@ function PlaylistCards({ pl_item: plItem, tracksData }) {
       <div className="pl-songs">
         <span className="song-count">{plItem.tracks} song/s</span>
         {downloaded && (
-          <a onClick={downloadZip} download={`${plItem.name}.zip`}>
-            <img src={folder} className="folder-style" alt="folder" />
+          <a onClick={downloadLinkDisabled ? (e) => e.preventDefault() : downloadZip}
+           download={`${plItem.name}.zip`}
+             style={{
+              opacity: downloadLinkDisabled ? 0.5 : 1,
+              pointerEvents: downloadLinkDisabled ? "none" : "auto",
+              cursor: downloadLinkDisabled ? "not-allowed" : "pointer",
+              transition: "opacity 0.3s"
+            }}
+            tabIndex={downloadLinkDisabled ? -1 : 0}
+            aria-disabled={downloadLinkDisabled}
+          >
+            <img src={folder} className="folder-style" alt="folder"/>
           </a>
         )}
       </div>
