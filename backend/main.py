@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import zipfile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse,JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from oauth_spotify import OAuth_Spotify
@@ -30,7 +30,7 @@ app.add_middleware(
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key=""
+    secret_key=b";\xa0\x05\x15WH'D\xcf\xe4\x19\x0b\xffE\x9b\xf3\xf6\xdeU#\x84x\x08IQ;\xab:/G\x8e\x08"
 )
 #--------------------------------------------------------------------------------------------------
 
@@ -38,6 +38,12 @@ class PlaylistRequest(BaseModel):
     
     """Needed to retrieve the playlist name from the frontend."""
     playlist_name: str
+    
+class AudioData(BaseModel):
+    
+    """Audio url from frontend."""
+    
+    audio_url: str
         
  
 #--------------------------------------------------------------------------------------------------
@@ -119,7 +125,33 @@ def delete_zipplaylist(playlist_name:str):
     
 #----------------------------------------------------------------------------------------------------- 
 
+@app.post("/download-audio")
+async def audio_download(audio_data:AudioData):
+    result = downloader.download_from_yt_link(audio_data.audio_url)
+    return result
+ 
+
+@app.get("/download-zipaudio")  
+def download_audio_zip():
+    current_dir = os.path.abspath(__file__)
+    backend_dir = os.path.dirname(current_dir)
+
+    downloads_path = os.path.join(backend_dir,"Youtube Downloads","downloads")
+    zip_path = os.path.join(backend_dir,"Youtube Downloads.zip")
+    
+    shutil.make_archive(os.path.splitext(zip_path)[0], 'zip', downloads_path)
+    try:
+        return FileResponse(
+            zip_path,
+            filename="Youtube Downloads.zip",
+            media_type="application/zip",
+            headers={"Content-Disposition":"attachment; filename=Youtube Downloads.zip"})
+    except:
+        return JSONResponse("Zip file not Generated")
+ 
+
      
+#-----------------------------------------------------------------------------------------------------
 
 app.add_api_route("/", oauth.home, methods=["GET"])
 app.add_api_route("/spot-login", oauth.spotify_login, methods=["GET"])

@@ -140,11 +140,10 @@ class YoutubeDownloader():
         
             
             
-    async def download_from_yt_link(self) -> str:
+    def download_from_yt_link(self,audio_url) -> str:
         
         """Downloads audio direclty from youtube."""
         
-        user_link = input("paste youtube audio's link to download: ")
         
         download_target_dir = os.path.join(self.project_dir, "Youtube Downloads") 
         ffmpeg_bin = os.path.abspath(os.path.join(self.project_dir, '.', 'ffmpeg', 'bin'))
@@ -166,14 +165,12 @@ class YoutubeDownloader():
             
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             try:
-              ydl.download([user_link])
+              ydl.download([audio_url])
               return "Audio downloaded"
           
             except DownloadError as err:
                 print(f"audio not found: {err}")
          
-        
-                
 
         
        
