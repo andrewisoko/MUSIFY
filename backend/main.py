@@ -40,11 +40,25 @@ class PlaylistRequest(BaseModel):
     """Needed to retrieve the playlist name from the frontend."""
     playlist_name: str
     
+class DeletePlaylistRequest(BaseModel):
+    
+    """Needed to retrieve the playlist name from the frontend."""
+    playlist_name: str
+    
+class DeleteZipPlaylist(BaseModel):
+    
+    """Needed to retrieve the playlist name from the frontend."""
+    playlist_name: str
+    
 class AudioData(BaseModel):
     
     """Audio url from frontend."""
     
     audio_url: str
+    
+  
+  
+    
         
  
 #--------------------------------------------------------------------------------------------------
@@ -61,9 +75,9 @@ async def download_playlist(plst_name:PlaylistRequest):
     return {"message": result}
 
 
-@app.get("/delete-playlist")
-def delete_playlist_intime(plst_name:PlaylistRequest):
-    time.sleep(70)
+@app.post("/delete-playlist")
+def delete_playlist_intime(plst_name:DeletePlaylistRequest):
+    time.sleep(30)
     cleanup.delete_playlistsdirectory(plst_name.playlist_name)
     
     return "Playlist deleted."
@@ -105,11 +119,11 @@ def download_playlist_zipfile(playlist_name: str):
     )
 
 
-@app.get("/delete-zipplaylist")
-async def delete_zipplaylist_intime():
+@app.post("/delete-zipplaylist")
+async def delete_zipplaylist_intime(zip_name:DeleteZipPlaylist):
     
-    time.sleep(600)
-    cleanup.delete_zipplaylist()
+    time.sleep(10)
+    cleanup.delete_zipplaylist(zip_name.playlist_name)
     
     return "Zip playlist deleted."
     

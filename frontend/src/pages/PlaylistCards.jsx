@@ -28,11 +28,11 @@ function PlaylistCards({ pl_item: plItem, tracksData }) {
           setDownloading(false);
           setDownloaded(true);
           
-          api.get("/delete-playlist")
+          api.post("/delete-playlist", {playlist_name: plItem.name})
           
            timerRef.current = setTimeout(() => {
             setDownloadLinkDisabled(true);        
-              api.get(`/delete-zipplaylist?playlist_name=${encodeURIComponent(plItem.name)}`)
+              api.post("/delete-zipplaylist", {playlist_name: plItem.name})
             .catch(err => console.error("Error deleting zip playlist:", err));
           }, 60000);
 

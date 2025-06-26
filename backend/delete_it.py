@@ -13,17 +13,17 @@ class DeleteIt():
         
         
     
-    def delete_playlistsdirectory(self,playlist_name):
+    def delete_playlistsdirectory(self,name_plst):
         
         """Deletes playlist from backend directory."""
         
-        plst_path = os.path.join(self.project_dir,"Playlists downloads",playlist_name,"downloads")
+        plst_path = os.path.join(self.project_dir,"Playlists downloads",name_plst,"downloads")
         list_audios = os.listdir(plst_path)
         for audio_file in list_audios:
             os.remove(os.path.join(plst_path,audio_file))
         os.rmdir(path=plst_path)
         os.rmdir(os.path.dirname(plst_path))
-        os.rmdir(os.path.abspath(self.project_dir,"Playlists downloads"))
+        os.rmdir(os.path.join(self.project_dir,"Playlists downloads"))
         
         
         
