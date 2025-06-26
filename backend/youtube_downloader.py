@@ -26,7 +26,7 @@ class YoutubeDownloader():
     
     def retrieve_playlists(self):
         
-        """Creates a instance attribute of all_tracks.json file."""
+        """Reads all_tracks.json file."""
         
         
         load_path = os.path.join(self.parent_directory,"frontend","public","services")
@@ -35,7 +35,6 @@ class YoutubeDownloader():
             self.playlists_json_data = json.load(read_file)
             
 
-      
     
     def youtube_audio_url(self) -> list: 
         
@@ -68,7 +67,7 @@ class YoutubeDownloader():
          
         """Downloads the audio song from the url youtube list."""
         
-        download_target_dir = os.path.join(self.playlist_name)
+        download_target_dir = os.path.join("Playlists downloads",self.playlist_name)
         ffmpeg_bin = os.path.abspath(os.path.join(self.project_dir, '.', 'ffmpeg', 'bin'))
         
     
@@ -103,8 +102,6 @@ class YoutubeDownloader():
                     
                     
 
-
-
     def download_selected_playlist(self,playlist_name) -> str:
         
         """Downloads spotify playlist based on user choice."""
@@ -125,17 +122,17 @@ class YoutubeDownloader():
             
         
     
-    def delete_playlist(self):
+    # def delete_playlist(self):
         
-        """Deletes playlists directory after a minute"""
+    #     """Deletes playlists directory after a minute"""
         
-        time.sleep(70)
-        plst_path = os.path.join(self.project_dir,self.playlist_name,"downloads")
-        list_audios = os.listdir(plst_path)
-        for audio_file in list_audios:
-            os.remove(os.path.join(plst_path,audio_file))
-        os.rmdir(path=plst_path)
-        os.rmdir(os.path.dirname(plst_path))
+    #     time.sleep(70)
+    #     plst_path = os.path.join(self.project_dir,self.playlist_name,"downloads")
+    #     list_audios = os.listdir(plst_path)
+    #     for audio_file in list_audios:
+    #         os.remove(os.path.join(plst_path,audio_file))
+    #     os.rmdir(path=plst_path)
+    #     os.rmdir(os.path.dirname(plst_path))
             
         
             

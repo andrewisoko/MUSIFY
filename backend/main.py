@@ -1,11 +1,11 @@
 from fastapi import FastAPI
-import zipfile
 from fastapi.responses import FileResponse,JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from oauth_spotify import OAuth_Spotify
 import uvicorn
 from  youtube_downloader import * 
+from delete_it import *
 from pydantic import BaseModel
 import shutil
 
@@ -19,6 +19,7 @@ origins = [
 app = FastAPI()
 downloader = YoutubeDownloader()  
 oauth = OAuth_Spotify()
+cleanup = DeleteIt()
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,7 +31,7 @@ app.add_middleware(
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key=b";\xa0\x05\x15WH'D\xcf\xe4\x19\x0b\xffE\x9b\xf3\xf6\xdeU#\x84x\x08IQ;\xab:/G\x8e\x08"
+    secret_key=""
 )
 #--------------------------------------------------------------------------------------------------
 
@@ -54,11 +55,18 @@ class AudioData(BaseModel):
 async def download_playlist(plst_name:PlaylistRequest):
     
     """As the post request gets triggered the the playlist folder gets generated into the directory."""
+    
     downloader.retrieve_playlists()
     result = downloader.download_selected_playlist(plst_name.playlist_name)
     return {"message": result}
 
-app.add_api_route("/delete-playlist", downloader.delete_playlist, methods=["GET"])
+
+@app.get("/delete-playlist")
+def delete_playlist_intime(plst_name:PlaylistRequest):
+    time.sleep(70)
+    cleanup.delete_playlistsdirectory(plst_name.playlist_name)
+    
+    return "Playlist deleted."
 
 
 #----------------------------------------------------------------------------------------------------
@@ -74,7 +82,7 @@ def download_playlist_zipfile(playlist_name: str):
     current_dir = os.path.abspath(__file__)
     backend_dir = os.path.dirname(current_dir)
 
-    downloads_path = os.path.join(backend_dir,playlist_name,"downloads")
+    downloads_path = os.path.join(backend_dir,"Playlists downloads",playlist_name,"downloads")
     zip_path = os.path.join(backend_dir, f"{playlist_name}.zip")
 
     if not os.path.exists(downloads_path):
@@ -98,41 +106,36 @@ def download_playlist_zipfile(playlist_name: str):
 
 
 @app.get("/delete-zipplaylist")
-def delete_zipplaylist(playlist_name:str):
+async def delete_zipplaylist_intime():
     
-    """Deletes zip playlist from directory after 10 minutes."""
+    time.sleep(600)
+    cleanup.delete_zipplaylist()
     
-    current_dir = os.path.abspath(__file__)
-    backend_dir = os.path.dirname(current_dir)
-    
-    zip_path = os.path.join(backend_dir,f"{playlist_name}.zip")
-    
-    if os.path.exists(zip_path):
-        
-        time.sleep(600)
-        with open(zip_path, "rb") as file:
-            playlist_zip_file = zipfile.ZipFile(file)
-            for items in playlist_zip_file.namelist():
-                filename = os.path.basename(items)
-                if not filename:
-                    continue
-                else:
-                   source = playlist_zip_file.open(items)
-        os.remove(zip_path)
-    else:
-        print("zip path not generated")
+    return "Zip playlist deleted."
     
     
 #----------------------------------------------------------------------------------------------------- 
+
 
 @app.post("/download-audio")
 async def audio_download(audio_data:AudioData):
     result = downloader.download_from_yt_link(audio_data.audio_url)
     return result
  
+ 
+@app.get("/0101delete-audio")
+def delete_audio_intime():
+    
+    time.sleep(200)
+    cleanup.delete_yt_download_dir()
+    
+    return "Yt audio deleted."
+ 
+
+#-----------------------------------------------------------------------------------------------------
 
 @app.get("/download-zipaudio")  
-def download_audio_zip():
+async def download_audio_zip():
     current_dir = os.path.abspath(__file__)
     backend_dir = os.path.dirname(current_dir)
 
@@ -150,6 +153,13 @@ def download_audio_zip():
         return JSONResponse("Zip file not Generated")
  
 
+@app.get("/delete-zipaudio")
+def delete_zipaudio_intime():
+    
+    time.sleep(200)
+    cleanup.delete_audiozip()
+    
+    return "Yt zip audio deleted."
      
 #-----------------------------------------------------------------------------------------------------
 
@@ -161,4 +171,5 @@ app.add_api_route("/tracks", oauth.get_tracks, methods=["GET"])
 app.add_api_route("/refresh-token", oauth.refresh_token, methods=["GET"])
 
 if __name__ == "__main__":
+    
     uvicorn.run("main:app", host="0.0.0.0", port=8888, reload=True)
