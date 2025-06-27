@@ -97,7 +97,7 @@ def download_playlist_zipfile(playlist_name: str):
     backend_dir = os.path.dirname(current_dir)
 
     downloads_path = os.path.join(backend_dir,"Playlists downloads",playlist_name,"downloads")
-    zip_path = os.path.join(backend_dir, f"{playlist_name}.zip")
+    zip_path = os.path.join(backend_dir,"zip playlist", f"{playlist_name}.zip")
 
     if not os.path.exists(downloads_path):
         return {"error": f"No downloads folder found for this playlist: {downloads_path}"}
@@ -141,7 +141,7 @@ async def audio_download(audio_data:AudioData):
 def delete_audio_intime():
     
     time.sleep(200)
-    cleanup.delete_yt_download_dir()
+    cleanup.delete_audio_dir()
     
     return "Yt audio deleted."
  
@@ -186,4 +186,5 @@ app.add_api_route("/refresh-token", oauth.refresh_token, methods=["GET"])
 
 if __name__ == "__main__":
     
+    print(cleanup.delete_all()) #deletes previous items created.
     uvicorn.run("main:app", host="0.0.0.0", port=8888, reload=True)
