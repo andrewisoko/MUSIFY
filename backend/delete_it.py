@@ -1,5 +1,4 @@
 import os 
-import time
 import zipfile
 
 class DeleteIt():
@@ -80,7 +79,24 @@ class DeleteIt():
             os.remove(zip_audio_path)
         else:
             print("zip path not generated")
+            
     
+    def delete_alltracks_cache(self):
 
+        musify_dir = os.path.dirname(self.backend_dir)
+        
+        if os.path.exists(os.path.join(musify_dir,"frontend", "public","services","allTracks.json")):
+            all_tracksjson = os.path.join(musify_dir,"frontend", "public","services","allTracks.json")
+            os.remove(all_tracksjson)
+        else:
+            print("file not found")
+            
+            
+            
+    def delete_playlistsjson_cache(self):
+        
+        if os.path.exists(os.path.join(self.backend_dir,"playlists_cache.json")):
+            playlists_cache = os.path.join(self.backend_dir,"playlists_cache.json")
+            os.remove(playlists_cache)
     
-
+    

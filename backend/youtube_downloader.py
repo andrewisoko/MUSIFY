@@ -2,6 +2,7 @@ import json
 import os
 import yt_dlp
 from yt_dlp import YoutubeDL
+from pytube import extract
 from yt_dlp.utils import DownloadError
 import time
 
@@ -53,10 +54,15 @@ class YoutubeDownloader():
             }
 
             with YoutubeDL(ydl_opts) as ydl:
-                result = ydl.extract_info(f"ytsearch1:{song}", download=False)
-                video = result['entries'][0]
-                self.yt_audio_url = (video['webpage_url'])
-                self.videoId_url_list.append({self.playlist_allsongs[0]:self.yt_audio_url})
+                try:
+                    result = ydl.extract_info(f"ytsearch1:{song}", download=False)
+                    video = result['entries'][0]
+                    self.yt_audio_url = (video['webpage_url']) 
+                    video_id = extract.video_id(self.yt_audio_url)
+                    share_yt_url = f"https://youtu.be/{video_id}"
+                except Exception as err:
+                    print(f"problem with {share_yt_url}, {err}")
+                self.videoId_url_list.append({self.playlist_allsongs[0]:share_yt_url})
             index_track += 1
                     
         return self.videoId_url_list           
@@ -92,7 +98,6 @@ class YoutubeDownloader():
                     audio_url = url
                     
                 audio_name_songtitle = self.playlist_allsongs[0]
-          
                 ydl.download([audio_url])
                 
                 print(f"{audio_name_songtitle} MP3 file downloaded.")
@@ -120,22 +125,7 @@ class YoutubeDownloader():
                 self.youtube_audio_url()
                 self.download_audio_as_mp3()
             
-        
-    
-    # def delete_playlist(self):
-        
-    #     """Deletes playlists directory after a minute"""
-        
-    #     time.sleep(70)
-    #     plst_path = os.path.join(self.project_dir,self.playlist_name,"downloads")
-    #     list_audios = os.listdir(plst_path)
-    #     for audio_file in list_audios:
-    #         os.remove(os.path.join(plst_path,audio_file))
-    #     os.rmdir(path=plst_path)
-    #     os.rmdir(os.path.dirname(plst_path))
-            
-        
-            
+                 
             
     def download_from_yt_link(self,audio_url) -> str:
         

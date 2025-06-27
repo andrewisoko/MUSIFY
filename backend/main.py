@@ -47,7 +47,7 @@ class DeletePlaylistRequest(BaseModel):
     
 class DeleteZipPlaylist(BaseModel):
     
-    """Needed to retrieve the playlist name from the frontend."""
+    """Needed to retrieve the zip playlist name from the frontend."""
     playlist_name: str
     
 class AudioData(BaseModel):
