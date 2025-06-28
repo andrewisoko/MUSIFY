@@ -97,8 +97,6 @@ class OAuth_Spotify:
         
         cache_path = Path("playlists_cache.json")
         
-        
-        
         # if data exists json data cache exists it will be accessed for an hour.
         
         if cache_path.exists() and (time.time() - cache_path.stat().st_mtime < self.cache_lifespan):
@@ -140,17 +138,19 @@ class OAuth_Spotify:
     
         """Returns a list of all tracks in a playlist"""
         
-        cache_file = Path(self.grandparent_dir, "frontend", "public","services","allTracks.json")
+        cache_file_path = Path(self.grandparent_dir, "frontend", "public","services","allTracks.json")
         
-
+        with open ("playlists_cache.json","r") as file:
+            playlist_cache = json.load(file)
+        
         # Return cached data if file exists and is recent (e.g., <1 hour old)
-        if cache_file.exists() and (time.time() - cache_file.stat().st_mtime < self.cache_lifespan):
-            with open(cache_file) as f:
+        if cache_file_path.exists() and (time.time() - cache_file_path.stat().st_mtime < self.cache_lifespan):
+            with open(cache_file_path) as f:
                 print("Using current all_tracks cache")
                 return JSONResponse(content=json.load(f))
 
         else:
-            playlists_data = self.playlists
+            playlists_data = playlist_cache
             json_trial_list = []
             for playlist in playlists_data["items"]:
                 playlist_name = playlist["name"]
@@ -174,9 +174,6 @@ class OAuth_Spotify:
                     track_name = track_dict["track"]["name"]
                     track_info.append(f'{artist_name} {track_name}')
                 json_trial_list.append({playlist_name: track_info})
-                
-         
-            
             dump_path = os.path.join(self.grandparent_dir,"frontend","public","services")
             
             with open(f"{dump_path}/allTracks.json", "w") as file:
