@@ -40,8 +40,8 @@ class OAuth_Spotify:
         
         """The first page from local address, provides the spotify login page link"""
         
-        content = "Welcome to Musify<br>Please click the link to log in <a href='/spot-login'>Spotify Log In</a>"
-        return Response(content=content, media_type="text/html")
+        content = "Welcome to Musify"
+        return Response(content=content)
     
     
 
