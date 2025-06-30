@@ -2,10 +2,10 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse,JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from oauth_spotify import OAuth_Spotify
+from backend.oauth_spotify import OAuth_Spotify
 import uvicorn
-from  youtube_downloader import * 
-from delete_it import *
+from  backend.youtube_downloader import * 
+from backend.delete_it import *
 from pydantic import BaseModel
 import shutil
 

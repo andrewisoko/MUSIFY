@@ -45,7 +45,7 @@ class OAuth_Spotify:
     
     
 
-    async def spotify_login(self, request: Request):
+    async def spotify_login(self): #removed request parameter check later.
         
         """Redirect the user to the auth url."""
         
