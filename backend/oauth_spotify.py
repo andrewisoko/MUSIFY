@@ -1,4 +1,4 @@
-from fastapi import Request
+from fastapi import Request,HTTPException
 from fastapi.responses import Response, RedirectResponse, JSONResponse
 import httpx
 import os
@@ -49,16 +49,19 @@ class OAuth_Spotify:
         
         """Redirect the user to the auth url."""
         
-        scope = 'playlist-read-collaborative'
-        params = {
-            "client_id":f"{self.client_id}",
-            "response_type": "code",
-            "scope": scope,
-            "redirect_uri": self.redirect_uri,
-            "show_dialog": True
-        }
-        auth_url = f"{self.auth_url}?{urllib.parse.urlencode(params)}"
-        return RedirectResponse(auth_url)
+        if self.client_id == "":
+            raise HTTPException(status_code=400, detail="Client id missing or invalid, please check.") 
+        else:
+            scope = 'playlist-read-collaborative'
+            params = {
+                "client_id":f"{self.client_id}",
+                "response_type": "code",
+                "scope": scope,
+                "redirect_uri": self.redirect_uri,
+                "show_dialog": True
+            }
+            auth_url = f"{self.auth_url}?{urllib.parse.urlencode(params)}"
+            return RedirectResponse(auth_url)
     
     
 
