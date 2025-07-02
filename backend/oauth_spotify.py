@@ -24,6 +24,7 @@ class OAuth_Spotify:
         self.redirect_uri = "http://127.0.0.1:8888/callback"
         self.auth_url = "https://accounts.spotify.com/authorize"
         self.baseapi_url = "https://api.spotify.com/v1/me/playlists"
+        self.scope = 'playlist-read-collaborative'
         self.url_getplaylist = None
         self.playlists = None
         self.client_id = os.getenv("CLIENT_ID")
@@ -52,11 +53,10 @@ class OAuth_Spotify:
         if self.client_id == "":
             raise HTTPException(status_code=400, detail="Client id missing or invalid, please check.") 
         else:
-            scope = 'playlist-read-collaborative'
             params = {
                 "client_id":f"{self.client_id}",
                 "response_type": "code",
-                "scope": scope,
+                "scope": self.scope,
                 "redirect_uri": self.redirect_uri,
                 "show_dialog": True
             }

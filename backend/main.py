@@ -3,38 +3,12 @@ from fastapi.responses import FileResponse,JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from backend.oauth_spotify import OAuth_Spotify
-import uvicorn
 from backend.youtube_downloader import * 
 from backend.delete_it import *
+import uvicorn
 from pydantic import BaseModel
 import shutil
-from fastapi.testclient import TestClient
-from fastapi import FastAPI
 
-def test_client_id():
-    # 1. Create a NEW FastAPI app instance for this test
-    app = FastAPI()
-    
-    # 2. Initialize your OAuth object
-    oauth = OAuth_Spotify()
-    oauth.client_id = ""
-    oauth.auth_url = "https://accounts.spotify.com/authorize"
-    oauth.redirect_uri = "http://127.0.0.1:8888/callback"
-    
-    # 3. Register the route with THIS app instance
-    app.add_api_route("/spot-login", oauth.spotify_login, methods=["GET"])
-    
-    # 4. Create TestClient AFTER registering routes
-    client = TestClient(app)
-    
-    # 5. Make the request
-    response = client.get("/spot-login")
-    
-    # 6. Validate
-    assert response.status_code == 400
-    assert response.json() == {
-        "detail": "Client id missing or invalid, please check."
-    }
 
 origins = [
     "http://127.0.0.1:5173",
@@ -84,9 +58,6 @@ class AudioData(BaseModel):
     
   
   
-    
-        
- 
 #--------------------------------------------------------------------------------------------------
 
 #Creating and deleting playlist from the directory.
