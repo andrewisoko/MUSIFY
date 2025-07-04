@@ -1,9 +1,10 @@
 import os 
 import zipfile
 import re
+
 class DeleteIt():
     
-    def __init__(self):
+    def __init__(self): 
         
         self.current_dir = os.path.abspath(__file__)
         self.backend_dir = os.path.dirname(self.current_dir)
@@ -75,7 +76,7 @@ class DeleteIt():
         
         if os.path.exists(self.zip_audio_path):
             
-            with open(self.zip_audio_path, "rb") as file:
+            with open(self.zip_audio_path,"rb") as file:
                 playlist_zip_file = zipfile.ZipFile(file)
                 for items in playlist_zip_file.namelist():
                     filename = os.path.basename(items)
