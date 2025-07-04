@@ -24,7 +24,7 @@ class OAuth_Spotify:
         self.redirect_uri = "http://127.0.0.1:8888/callback"
         self.auth_url = "https://accounts.spotify.com/authorize"
         self.baseapi_url = "https://api.spotify.com/v1/me/playlists"
-        self.scope = 'playlist-read-collaborative'
+        self.scope = 'playlist-read-collaborative'  # 'playlist-read-private' 'playlist-modify-private' 'playlist-modify-public'
         self.url_getplaylist = None
         self.playlists = None
         self.client_id = os.getenv("CLIENT_ID")
@@ -87,9 +87,9 @@ class OAuth_Spotify:
                 request.session['access_token'] = token_json_info['access_token']
                 request.session['refresh_token'] = token_json_info['refresh_token']
                 request.session['expires_at'] = datetime.now().timestamp() + token_json_info['expires_in']
-                  
-              
-            
+                
+                # print(request.session["access_token"])
+                
             return RedirectResponse('http://127.0.0.1:5173/playlists')
 
 

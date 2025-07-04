@@ -4,7 +4,7 @@ import urllib.parse
 import os
 
 
-### to run the test change the main.py modules in relative paths ex: from backend.oauth_spotify import OAuth_Spotify, from  backend.youtube_downloader import *  etc...
+# to run the test, change the main.py modules in relative paths ex: from backend.oauth_spotify import OAuth_Spotify, from  backend.youtube_downloader import *  etc...
 
 client = TestClient(app)
 
