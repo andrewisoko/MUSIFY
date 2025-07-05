@@ -9,12 +9,12 @@ class DeleteIt():
         self.current_dir = os.path.abspath(__file__)
         self.backend_dir = os.path.dirname(self.current_dir)
         self.musify_dir = os.path.dirname(self.backend_dir)
-        self.project_dir = os.path.dirname(os.path.abspath(__file__))
-        self. plst_path_main = os.path.join(self.project_dir,"Playlists downloads")
+      
+        self. plst_path_main = os.path.join(self.backend_dir,"Playlists downloads")
         self.zip_path_main = os.path.join(self.backend_dir,"zip playlist")
         self.zip_audio_path = os.path.join(self.backend_dir,"Youtube downloads.zip")
         self.playlists_cache = os.path.join(self.backend_dir,"playlists_cache.json")
-        self.yt_audio_path =  os.path.join(self.project_dir, "Youtube Downloads","downloads") 
+        self.yt_audio_path =  os.path.join(self.backend_dir, "Youtube Downloads","downloads") 
         self.all_tracksjson = os.path.join(self.musify_dir,"frontend", "public","services","allTracks.json")
         
         
@@ -23,7 +23,7 @@ class DeleteIt():
         
         """Deletes playlist from backend directory."""
         
-        plst_path = os.path.join(self.project_dir,"Playlists downloads",name_plst,"downloads")
+        plst_path = os.path.join(self.backend_dir,"Playlists downloads",name_plst,"downloads")
         list_audios = os.listdir(plst_path)
         for audio_file in list_audios:
             os.remove(os.path.join(plst_path,audio_file))
@@ -65,7 +65,7 @@ class DeleteIt():
         for audio_file in list_audios:
             os.remove(os.path.join(self.yt_audio_path,audio_file))
         os.rmdir(path=self.yt_audio_path)
-        os.rmdir(path=os.path.join(self.project_dir, "Youtube Downloads"))
+        os.rmdir(path=os.path.join(self.backend_dir, "Youtube Downloads"))
         
         
         
@@ -117,7 +117,7 @@ class DeleteIt():
       
         for loops in range(6):
         
-            if os.path.exists(os.path.join(self.project_dir,"Playlists downloads")):
+            if os.path.exists(os.path.join(self.backend_dir,"Playlists downloads")):
                 self.delete_playlistsdirectory(name_plst=name_plst)
                 print("PL Download eliminated")
             elif os.path.exists(os.path.join(self.backend_dir,"zip playlist")):   

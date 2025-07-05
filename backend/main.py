@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse,JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from backend.oauth_spotify import OAuth_Spotify
-from backend.youtube_downloader import * 
-from backend.delete_it import *
+from oauth_spotify import OAuth_Spotify
+from youtube_downloader import * 
+from delete_it import *
 import uvicorn
 from pydantic import BaseModel
 import shutil
@@ -31,7 +31,7 @@ app.add_middleware(
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key=""
+    secret_key= ""
 )
 #--------------------------------------------------------------------------------------------------
 
