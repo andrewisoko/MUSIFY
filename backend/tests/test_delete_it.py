@@ -1,95 +1,86 @@
-from pathlib import Path
 import os
-from backend.delete_it import *
+import tempfile
 import zipfile
-import json
+import pytest
 
-class Test_delete_it():
-    
-    def file_paths(self):
-        
-        self.cleanup_completed = False
-        self.backend_path = Path(__file__).resolve().parent.parent
-        self.musify_path = Path(__file__).resolve().parent.parent.parent
-        self.frontend_service_path = os.path.join(self.musify_path,"frontend", "public","services")
-                
-        self.plst_path = os.path.join(self.backend_path,"Playlists downloads","playlist name","downloads")
-        self.zip_path = os.path.join(self.backend_path,"zip playlist")
-        self.yt_audio_path =  os.path.join(self.backend_path, "Youtube Downloads","downloads") 
-        self.zip_audio_path = os.path.join(self.backend_path,"Youtube downloads.zip")
-        
-        self.playlists_cache = os.path.join(self.backend_path,"playlists_cache.json")
-        self.all_tracksjson = os.path.join(self.musify_path,"frontend", "public","services","allTracks.json")
+from backend.delete_it import DeleteIt  
 
+@pytest.fixture
+def fake_filesystem():
+    with tempfile.TemporaryDirectory() as tempdir:
+        
+        """Creating an emulation directory with all the necesary file paths."""
+        
+        musify_dir = os.path.join(tempdir, "musify")
+        backend_dir = os.path.join(tempdir, "backend")
+        frontend_dir = os.path.join(musify_dir, "frontend", "public", "services")
+        
+        plst_downloads = os.path.join(tempdir, "Playlists downloads", "playlist1", "downloads")
+        zip_playlist_dir = os.path.join(backend_dir, "zip playlist")
+        zip_file_path = os.path.join(zip_playlist_dir, "dummy.zip")
+        yt_downloads = os.path.join(tempdir, "Youtube Downloads", "downloads")
+        zip_audio_path = os.path.join(backend_dir, "Youtube downloads.zip")
+        playlists_cache = os.path.join(backend_dir, "playlists_cache.json")
+        all_tracksjson = os.path.join(frontend_dir, "allTracks.json")
+        
 
-    def test_generate_file_paths(self):
+        os.makedirs(plst_downloads)
+        with open(os.path.join(plst_downloads, "song.mp3"), "w") as f:
+            f.write("dummy audio")
         
-        self.file_paths()
+      
+        os.makedirs(backend_dir, exist_ok=True)
+        os.makedirs(frontend_dir, exist_ok=True)
+        os.makedirs(zip_playlist_dir, exist_ok=True)
+        os.makedirs(yt_downloads)
         
-        if os.path.exists(
-            self.plst_path) and os.path.exists(
-            self.zip_path) and os.path.exists(
-            self.yt_audio_path) and os.path.exists(
-            self.zip_audio_path) and os.path.exists(
-            self.playlists_cache) and os.path.exists(
-            self.all_tracksjson
-            ):
-            pass
         
-        else:
+        
+        with open(os.path.join(yt_downloads, "yt_song.mp3"), "w") as f:
+            f.write("dummy yt audio")
             
-            zip_file_full_path = os.path.join(self.zip_path, "my_archive.zip")
-            zip_fileaudio_full_path = os.path.join(self.backend_path,"Youtube downloads.zip")
+        with zipfile.ZipFile(zip_file_path,"w") as myzip:
+            myzip.writestr(data= "dummy.txt",zinfo_or_arcname="dummy.zip")
+
+        with zipfile.ZipFile (zip_audio_path,"w") as audiozip:
+            audiozip.writestr(data="audio dummy.txt", zinfo_or_arcname = "Youtube downloads.zip")
+        with open(all_tracksjson, "w") as f:
+            f.write("{}")
+ 
+        with open(playlists_cache, "w") as f:
+            f.write("{}")
+        
+        yield tempdir  
+
+
+def test_delete_all(fake_filesystem):
+
+    cleanup_test = DeleteIt()
+
+    if os.path.exists(os.path.join(
+        fake_filesystem, "Playlists downloads", "playlist1", "downloads")
+        ) and os.path.exists(os.path.join(
+        fake_filesystem,"backend", "zip playlist")
+        ) and os.path.exists(os.path.join(
+        fake_filesystem,"backend", "Youtube downloads.zip")
+        ) and os.path.exists(os.path.join(
+        fake_filesystem, "Youtube Downloads","downloads")
+        ) and os.path.exists(os.path.join(
+        fake_filesystem,"backend","playlists_cache.json")
+        ) and os.path.exists(os.path.join(
+        fake_filesystem,"musify","frontend", "public", "services","allTracks.json")):
             
-            os.makedirs(self.plst_path, exist_ok=True)
-            os.makedirs(self.yt_audio_path, exist_ok=True)
-            os.makedirs(self.zip_path, exist_ok=True)
-          
-
-            with open(f"{self.backend_path}/playlists_cache.json", "w") as file_playlist:
-                data = {"something": "in it"}
-                json.dump(data, file_playlist)
-
-            with open(f"{self.frontend_service_path}/allTracks.json", "w") as file_alltracks:
-                data = {"something": "in it"}
-                json.dump(data, file_alltracks)
-
-            with zipfile.ZipFile(zip_file_full_path, 'w') as zipf:
-                zipf.writestr("data.txt", "content")
-
-            with zipfile.ZipFile(zip_fileaudio_full_path, 'w') as zipf:
-                zipf.writestr("data.txt", "content")
-
+        print(cleanup_test.delete_all())
         assert True
         
+    else:
+        assert False
         
-    def test_delete_all(self):
-        
-        cleanup_test = DeleteIt()
-        print(cleanup_test.delete_all())
-        try:
-            if os.path.exists(
-                self.plst_path) and os.path.exists(
-                self.zip_path) and os.path.exists(
-                self.yt_audio_path) and os.path.exists(
-                self.zip_audio_path) and os.path.exists(
-                self.playlists_cache) and os.path.exists(
-                self.all_tracksjson):
-                self.cleanup_completed = False
-                
-        except Exception as err:
-            print("clean up completed")
-            self.cleanup_completed = True
-            assert self.cleanup_completed == True
-        
-        
-        
-        
-     
+
+            
     
    
-    
-    
+
 
   
     
