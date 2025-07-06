@@ -20,10 +20,8 @@ class Test_delete_it():
         
         self.playlists_cache = os.path.join(self.backend_path,"playlists_cache.json")
         self.all_tracksjson = os.path.join(self.musify_path,"frontend", "public","services","allTracks.json")
-        # if "a" == "a":
-        #     print(self.musify_path)
-        #     assert False
-    
+
+
     def test_generate_file_paths(self):
         
         self.file_paths()
@@ -68,7 +66,7 @@ class Test_delete_it():
     def test_delete_all(self):
         
         cleanup_test = DeleteIt()
-        cleanup_test.delete_all()
+        print(cleanup_test.delete_all())
         try:
             if os.path.exists(
                 self.plst_path) and os.path.exists(
@@ -91,4 +89,7 @@ class Test_delete_it():
     
    
     
+    
+
+  
     
