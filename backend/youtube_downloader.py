@@ -89,6 +89,8 @@ class YoutubeDownloader():
             'quiet': False,  
             'paths': {'home': f'{download_target_dir}'},
              'ffmpeg_location': ffmpeg_bin,
+            'socket_timeout': 2,   
+            'force_ipv4': True,
         }
             
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -148,6 +150,8 @@ class YoutubeDownloader():
             'quiet': False,  
             'paths': {'home': f'{download_target_dir}'},
              'ffmpeg_location': ffmpeg_bin,
+            'socket_timeout': 2,   
+            'force_ipv4': True,
         }
             
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
