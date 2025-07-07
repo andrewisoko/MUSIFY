@@ -117,10 +117,10 @@ class DeleteIt():
       
         for loops in range(6):
         
-            if os.path.exists(os.path.join(self.backend_dir,"Playlists downloads")):
+            if os.path.exists(self.plst_path_main):
                 self.delete_playlistsdirectory(name_plst=name_plst)
                 print("PL Download eliminated")
-            elif os.path.exists(os.path.join(self.backend_dir,"zip playlist")):   
+            elif os.path.exists(self.zip_path_main):   
                 self.delete_zipplaylist(playlist_name=playlist_name) 
                 print("Zip playlist eliminated")
             elif os.path.exists(self.yt_audio_path):
