@@ -85,7 +85,7 @@ def delete_playlist_intime(plst_name:DeletePlaylistRequest):
 
 #Creating and deleting zip playlist from the directory.
 
-@app.get("/api/download/{playlist_name}")
+@app.get("/zipdownload/{playlist_name}")
 def download_playlist_zipfile(playlist_name: str):
 
     """It generates a zip file for the downloading from the browser."""

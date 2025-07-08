@@ -30,7 +30,6 @@ function Playlists() {
         setTracksLoaded(true);
       } catch (err) {
         console.error("Error loading allTracks:", err);
-        // Retry after 2 seconds if failed
         setTimeout(fetchTracks, 2000);
       }
     };

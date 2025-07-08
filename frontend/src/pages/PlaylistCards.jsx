@@ -58,7 +58,7 @@ function PlaylistCards({ pl_item: plItem, tracksData, tracksLoaded }) {
   }, []);
 
   const downloadZip = () => {
-    const downloadUrl = `http://127.0.0.1:8888/api/download/${encodeURIComponent(plItem.name)}`;
+    const downloadUrl = `http://127.0.0.1:8888/zipdownload/${encodeURIComponent(plItem.name)}`;
     const link = document.createElement('a');
     link.href = downloadUrl;
     link.download = `${plItem.name}.zip`;
