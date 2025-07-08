@@ -62,26 +62,16 @@ Click the local enpoint from the terminal (Local:   http://127.0.0.1:5173/)
 
 ## tests
 
-1) To run tests it is required to add:
-
-"backend." on every module imported from the backend 
-
-![Alt text](https://github.com/andrewisoko/MUSIFY/blob/main/images/Screenshot%202025-07-05%20110902.png?raw=true)
-
-2) Go to the tests directory from the terminal:
-
+1) To run tests it is required to activate the virtual environment then:
+   
 ```
 cd ./backend/
-```
-
-```
-cd ./tests/
 ```
 
 3) To run test:
 
 ```
-pytest
+python -m pytest
 ```
 
 4) Running the test_playlists.py will result in an  "assert response.json()["total"] == 20" error.
