@@ -1,9 +1,9 @@
 from fastapi.testclient import TestClient
 from fastapi import FastAPI
 from backend.main import app 
-from dotenv import load_dotenv
 from backend.oauth_spotify import OAuth_Spotify
 import urllib.parse
+from dotenv import load_dotenv,find_dotenv
 import os
 
 
@@ -16,13 +16,14 @@ client = TestClient(app)
 
 def test_read_spot_login():
     
+    load_dotenv(find_dotenv())
 
     auth_url = "https://accounts.spotify.com/authorize"
     redirect_uri = "http://127.0.0.1:8888/callback"
     scope = 'playlist-read-collaborative'
     
     params = {
-        "client_id": None,
+        "client_id": os.getenv("CLIENT_ID"),
         "response_type": "code",
         "scope": scope,
         "redirect_uri": redirect_uri,
