@@ -104,7 +104,7 @@ if __name__ == "__main__":
    - Then api request at /playlists and /tracks endpoint to grant access to spotify playlists data.
    - Generates of a playlist cache file and alltracks json file in the backend.
    - Frontend renders the page with the playlists data.
-   - 
+     
 5) When clicking the download button of a playlist:
    
    - It will send an api request at the /download-playlist endpoint.
@@ -112,7 +112,7 @@ if __name__ == "__main__":
    - These two functions generate the playlist folders:
      
      ```
-         def download_audio_as_mp3(self) -> str:
+         def download_audio_as_mp3(self):
          
         """Downloads the audio song from the url youtube list."""
         
@@ -152,7 +152,7 @@ if __name__ == "__main__":
                
                     
 
-       def download_selected_playlist(self,playlist_name) -> str:
+       def download_selected_playlist(self,playlist_name):
            
            """Downloads spotify playlist based on user choice."""
            
@@ -171,9 +171,9 @@ if __name__ == "__main__":
                    self.download_audio_as_mp3()
 
      
-      - Folder icon appears in the webpage, playlist card. Only available temporarily.
-      - Api request at the /delete-playlist endpoint.
-      - Playlist folder deleted from the backend directory.
+   - Folder icon appears in the webpage, playlist card. Only available temporarily.
+   - Api request at the /delete-playlist endpoint.
+   - Playlist folder deleted from the backend directory.
 
  6) If folder icon clicked.
 
