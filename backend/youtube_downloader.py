@@ -69,7 +69,7 @@ class YoutubeDownloader():
          
          
         
-    def download_audio_as_mp3(self) -> str:
+    def download_audio_as_mp3(self):
          
         """Downloads the audio song from the url youtube list."""
         
@@ -109,7 +109,7 @@ class YoutubeDownloader():
                     
                     
 
-    def download_selected_playlist(self,playlist_name) -> str:
+    def download_selected_playlist(self,playlist_name):
         
         """Downloads spotify playlist based on user choice."""
         
