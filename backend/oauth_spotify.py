@@ -67,7 +67,7 @@ class OAuth_Spotify:
 
     async def auth_response(self, request: Request):
         
-        """Post recquest to the api token url and redirecting to playlist endpoint."""
+        """Post request to the api token url and redirecting to playlist endpoint."""
         
         
         if 'error' in request.query_params:
